@@ -1,10 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Entities
+namespace DataTransferObject.Cadastro
 {
-    public class Carros
+    public class CarrosDTO
     {
-        public Guid carId { get; set; }
+        [Required]
         public string carModelo { get; set; }
         public string carMarca { get; set; }
         public DateTime carAno { get; set; }

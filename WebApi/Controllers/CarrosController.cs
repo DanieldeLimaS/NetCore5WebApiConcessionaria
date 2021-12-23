@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.Infra;
 using DataTransferObject.Cadastro;
+using Interfaces;
+using Service;
 
 namespace WebApi.Controllers
 {
@@ -16,17 +18,20 @@ namespace WebApi.Controllers
     public class CarrosController : ControllerBase
     {
         private readonly AppDbContext _context;
-
+        ICarrosService iCarrosService;
         public CarrosController(AppDbContext context)
         {
             _context = context;
+            iCarrosService = new CarrosService(context);
         }
 
         // GET: api/Carros
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Carros>>> GetCarros()
         {
-            return await _context.Carros.ToListAsync();
+           
+            var lista = await iCarrosService.GetColecaoCarros();
+            return lista.ToList();
         }
 
         // GET: api/Carros?precoMenor=5000
