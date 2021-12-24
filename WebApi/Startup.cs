@@ -1,18 +1,23 @@
+#region Manutenção do Código Fonte
+/*
+
+<IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = "24/12/2021"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "Limpesa de variaveis e declarações sem uso na classe"
+</IDENTIFICACAO_DE_MANUTENCAO>
+ 
+ */
+#endregion
+
 using Domain.Infra;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace WebApi
 {
@@ -47,7 +52,7 @@ namespace WebApi
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1");
-                    
+
                 });
             }
 

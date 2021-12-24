@@ -1,4 +1,21 @@
-﻿using System;
+﻿#region Manutenção do Código Fonte
+/*
+< IDENTIFICACAO_DE_MANUTENCAO >
+DATA            = "24/12/2021"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "alteração do filtro de getCarros e adição do summary no metodo get"
+</IDENTIFICACAO_DE_MANUTENCAO>
+
+<IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = ""
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "a"
+</IDENTIFICACAO_DE_MANUTENCAO>
+ 
+ */
+#endregion
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +27,8 @@ using Domain.Infra;
 using DataTransferObject.Cadastro;
 using Interfaces;
 using Service;
+using System.ComponentModel;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebApi.Controllers
 {
@@ -35,8 +54,13 @@ namespace WebApi.Controllers
         }
 
         // GET: api/Carros?precoMenor=5000
+        /// <summary>
+        /// Busca lista de carros
+        /// </summary>
+        /// <param name="filtro"></param>
+        /// <returns></returns>
+        [SwaggerOperation("Add a new Pet to the store")]
         [HttpGet("BuscarCarros")]
-
         public async Task<ActionResult<IEnumerable<Carros>>> GetCarros([FromQuery] CarrosFiltroDTO filtro)
         {
                 var colecaoCarro = await _context.Carros.ToListAsync();
@@ -45,7 +69,7 @@ namespace WebApi.Controllers
             
 
         }
-
+  
         private List<Carros> CriaFiltroQueryColecao(CarrosFiltroDTO filtro, List<Carros> query)
         {
             try
@@ -56,8 +80,8 @@ namespace WebApi.Controllers
                 query = (filtro.carDataCadastroFim.HasValue) ? (query.Where(x => x.carDataCadastro >= filtro.carDataCadastroFim).ToList()) : query;
                 query = (filtro.carAnoIni.HasValue) ? (query.Where(x => x.carAno >= filtro.carAnoIni).ToList()) : query;
                 query = (filtro.carAnoFim.HasValue) ? (query.Where(x => x.carAno >= filtro.carAnoFim).ToList()) : query;
-                query = (string.IsNullOrWhiteSpace(filtro.carMarca)) ? (query.Where(x => x.carMarca.Contains(filtro.carMarca)).ToList()) : query;
-                query = (string.IsNullOrWhiteSpace(filtro.carModelo)) ? (query.Where(x => x.carModelo.Contains(filtro.carModelo)).ToList()) : query;
+                query = (filtro.carMarca != null) ? (query.Where(x => x.carMarca.Contains(filtro.carMarca)).ToList()) : query;
+                query = (filtro.carModelo != null) ? (query.Where(x => x.carModelo.Contains(filtro.carModelo)).ToList()) : query;
                 query = (filtro.carDisponivelVenda.HasValue) ? (query.Where(x => x.carDisponivel == filtro.carDisponivelVenda).ToList()) : query;
 
                 return query.ToList();

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApi</name>
+    </assembly>
+    <members>
+        <member name="M:WebApi.Controllers.CarrosController.GetCarros(DataTransferObject.Cadastro.CarrosFiltroDTO)">
+            <summary>
+            Busca lista de carros
+            </summary>
+            <param name="filtro"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
