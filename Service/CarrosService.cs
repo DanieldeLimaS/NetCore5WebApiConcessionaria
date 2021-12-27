@@ -18,7 +18,6 @@ MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada
 using DataTransferObject.Cadastro;
 using Domain.Entities;
 using Domain.Infra;
-using Infrastructure.String_Message;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,24 +30,19 @@ namespace Service
 {
     public class CarrosService : ICarrosService
     {
-        private readonly AppDbContext DbContext;
         public CarrosService()
         {
 
         }
-        public CarrosService(AppDbContext context)
-        {
-            DbContext = context;
-        }
-
-
 
         public async Task<IEnumerable<Carros>> GetColecaoCarros()
         {
             try
             {
-                return await DbContext.Carros.ToListAsync();
-
+                using (var context = new AppDbContext())
+                {
+                    return await context.Carros.ToListAsync();
+                }
             }
             catch (Exception ex)
             {
@@ -60,18 +54,20 @@ namespace Service
         {
             try
             {
-                List<Carros> query = new List<Carros>();
-                query = (filtro.carPrecoMenor.HasValue) ? (query.Where(x => x.carPreco <= filtro.carPrecoMenor).ToList()) : query;
-                query = (filtro.carPrecoMaior.HasValue) ? (query.Where(x => x.carPreco <= filtro.carPrecoMaior).ToList()) : query;
-                query = (filtro.carDataCadastroIni.HasValue) ? (query.Where(x => x.carDataCadastro >= filtro.carDataCadastroIni).ToList()) : query;
-                query = (filtro.carDataCadastroFim.HasValue) ? (query.Where(x => x.carDataCadastro >= filtro.carDataCadastroFim).ToList()) : query;
-                query = (filtro.carAnoIni.HasValue) ? (query.Where(x => x.carAno >= filtro.carAnoIni).ToList()) : query;
-                query = (filtro.carAnoFim.HasValue) ? (query.Where(x => x.carAno >= filtro.carAnoFim).ToList()) : query;
-                query = (filtro.carMarca != null) ? (query.Where(x => x.carMarca.Contains(filtro.carMarca)).ToList()) : query;
-                query = (filtro.carModelo != null) ? (query.Where(x => x.carModelo.Contains(filtro.carModelo)).ToList()) : query;
-                query = (filtro.carDisponivelVenda.HasValue) ? (query.Where(x => x.carDisponivel == filtro.carDisponivelVenda).ToList()) : query;
-
-                return query.ToList();
+                using(var context = new AppDbContext())
+                {
+                    List<Carros> query = await context.Carros.ToListAsync();
+                    query = (filtro.carPrecoMenor.HasValue) ? (context.Carros.Where(x => x.carPreco <= filtro.carPrecoMenor).ToList()) : query;
+                    query = (filtro.carPrecoMaior.HasValue) ? (context.Carros.Where(x => x.carPreco <= filtro.carPrecoMaior).ToList()) : query;
+                    query = (filtro.carDataCadastroIni.HasValue) ? (context.Carros.Where(x => x.carDataCadastro >= filtro.carDataCadastroIni).ToList()) : query;
+                    query = (filtro.carDataCadastroFim.HasValue) ? (context.Carros.Where(x => x.carDataCadastro >= filtro.carDataCadastroFim).ToList()) : query;
+                    query = (filtro.carAnoIni.HasValue) ? (context.Carros.Where(x => x.carAno >= filtro.carAnoIni).ToList()) : query;
+                    query = (filtro.carAnoFim.HasValue) ? (context.Carros.Where(x => x.carAno >= filtro.carAnoFim).ToList()) : query;
+                    query = (filtro.carMarca != null) ? (context.Carros.Where(x => x.carMarca.Contains(filtro.carMarca)).ToList()) : query;
+                    query = (filtro.carModelo != null) ? (context.Carros.Where(x => x.carModelo.Contains(filtro.carModelo)).ToList()) : query;
+                    query = (filtro.carDisponivelVenda.HasValue) ? (context.Carros.Where(x => x.carDisponivel == filtro.carDisponivelVenda).ToList()) : query;
+                    return query.ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -82,7 +78,10 @@ namespace Service
         {
             try
             {
-                return await DbContext.Carros.FindAsync(carId);
+                using(var context = new AppDbContext())
+                {
+                    return await context.Carros.FindAsync(carId);
+                }
             }
             catch (Exception ex)
             {
@@ -94,9 +93,12 @@ namespace Service
         {
             try
             {
-                DbContext.Entry(objeto).State = EntityState.Modified;
-                await DbContext.SaveChangesAsync();
-                return true;
+                using(var context = new AppDbContext())
+                {
+                    context.Entry(objeto).State = EntityState.Modified;
+                    await context.SaveChangesAsync();
+                    return true;
+                }
             }
             catch (DbUpdateConcurrencyException ex)
             {
@@ -106,15 +108,29 @@ namespace Service
 
         public async Task<bool> CarrosExists(Guid id)
         {
-            return await DbContext.Carros.AnyAsync(e => e.carId == id);
+            try
+            {
+                using (var context = new AppDbContext())
+                {
+                    return await context.Carros.AnyAsync(e => e.carId == id);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new FaultException(ex.Message);
+            }
         }
         public async Task<bool> CreateCarro(Carros objeto)
         {
             try
             {
-                DbContext.Carros.Add(objeto);
-                await DbContext.SaveChangesAsync();
-                return true;
+                using(var context = new AppDbContext())
+                {
+                    context.Carros.Add(objeto);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+              
             }
             catch (Exception ex)
             {
@@ -126,14 +142,18 @@ namespace Service
         {
             try
             {
-                var carro = await GetObjetoCarro(carId);
-                DbContext.Carros.Remove(carro);
-                await DbContext.SaveChangesAsync();
-                return true;
+                using(var context = new AppDbContext())
+                {
+                    var carro = await GetObjetoCarro(carId);
+                    context.Carros.Remove(carro);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+               
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                throw new FaultException(ex.Message);
             }
            
         }

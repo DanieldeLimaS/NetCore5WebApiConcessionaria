@@ -18,15 +18,12 @@ MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada
 using AutoMapper;
 using DataTransferObject.Cadastro;
 using Domain.Entities;
-using Domain.Infra;
 using Infrastructure.String_Message;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Service;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -89,7 +86,7 @@ namespace WebApi.Controllers
         {
             var carros = await iCarrosService.GetObjetoCarro(id);
             if (carros == null)
-                return NotFound("Nenhum registro localizado.");
+                return NotFound(Messages.NenhumRegistroLocalizado);
 
             return Ok(carros);
         }
@@ -140,7 +137,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Ocorreu um erro interno:\n"+ex.Message);
+                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao+ex.Message);
             }
           
         }

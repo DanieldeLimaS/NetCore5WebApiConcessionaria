@@ -19,6 +19,10 @@ namespace Domain.Infra
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext():base()
+        {
+
+        }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
@@ -32,7 +36,7 @@ namespace Domain.Infra
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.UseSqlServer("Server=localhost;Database=DBCONCESSIONARIA;uid=sa;pwd=1234;Trusted_Connection=True;MultipleActiveResultSets=true");
         }
-
     }
 }
