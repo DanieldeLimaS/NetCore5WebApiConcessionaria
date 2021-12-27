@@ -1,4 +1,17 @@
-﻿using Domain.Entities;
+﻿#region Manutenção do Código Fonte
+/*
+
+<IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = "27/12/2021"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "Organização de controle de manutenção de fonte"
+</IDENTIFICACAO_DE_MANUTENCAO>
+ 
+ */
+#endregion
+
+
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -7,28 +7,26 @@ MANUTENÇÃO      = "alteração do filtro de getCarros e adição do summary no
 </IDENTIFICACAO_DE_MANUTENCAO>
 
 <IDENTIFICACAO_DE_MANUTENCAO>
-DATA            = ""
+DATA            = "27/12/2021"
 PROGRAMADOR     = "Daniel de Lima dos Santos"
-MANUTENÇÃO      = "a"
+MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada de service para fazer a persistencia no banco"
 </IDENTIFICACAO_DE_MANUTENCAO>
  
  */
 #endregion
 
+using DataTransferObject.Cadastro;
+using Domain.Entities;
+using Domain.Infra;
+using Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Service;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
-using Domain.Infra;
-using DataTransferObject.Cadastro;
-using Interfaces;
-using Service;
-using System.ComponentModel;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebApi.Controllers
 {
@@ -45,12 +43,19 @@ namespace WebApi.Controllers
         }
 
         // GET: api/Carros
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Carros>>> GetCarros()
+        [HttpGet("BuscarTodos")]
+        public async Task<IActionResult> GetCarros()
         {
-           
-            var lista = await iCarrosService.GetColecaoCarros();
-            return lista.ToList();
+            try
+            {
+                var lista = await iCarrosService.GetColecaoCarros();
+                return Ok(lista.ToList());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Ocorreu um erro:\n" + ex.Message);
+            }
+
         }
 
         // GET: api/Carros?precoMenor=5000
@@ -60,42 +65,25 @@ namespace WebApi.Controllers
         /// <param name="filtro"></param>
         /// <returns></returns>
         [SwaggerOperation("Add a new Pet to the store")]
-        [HttpGet("BuscarCarros")]
-        public async Task<ActionResult<IEnumerable<Carros>>> GetCarros([FromQuery] CarrosFiltroDTO filtro)
-        {
-                var colecaoCarro = await _context.Carros.ToListAsync();
-                colecaoCarro = CriaFiltroQueryColecao(filtro,colecaoCarro);
-                return colecaoCarro;
-            
-
-        }
-  
-        private List<Carros> CriaFiltroQueryColecao(CarrosFiltroDTO filtro, List<Carros> query)
+        [HttpGet("BuscarCarrosComFiltros")]
+        public async Task<IActionResult> GetCarros([FromQuery] CarrosFiltroDTO filtro)
         {
             try
             {
-                query = (filtro.carPrecoMenor.HasValue) ? (query.Where(x => x.carPreco <= filtro.carPrecoMenor).ToList()) : query;
-                query = (filtro.carPrecoMaior.HasValue) ? (query.Where(x => x.carPreco <= filtro.carPrecoMaior).ToList()) : query;
-                query = (filtro.carDataCadastroIni.HasValue) ? (query.Where(x => x.carDataCadastro >= filtro.carDataCadastroIni).ToList()) : query;
-                query = (filtro.carDataCadastroFim.HasValue) ? (query.Where(x => x.carDataCadastro >= filtro.carDataCadastroFim).ToList()) : query;
-                query = (filtro.carAnoIni.HasValue) ? (query.Where(x => x.carAno >= filtro.carAnoIni).ToList()) : query;
-                query = (filtro.carAnoFim.HasValue) ? (query.Where(x => x.carAno >= filtro.carAnoFim).ToList()) : query;
-                query = (filtro.carMarca != null) ? (query.Where(x => x.carMarca.Contains(filtro.carMarca)).ToList()) : query;
-                query = (filtro.carModelo != null) ? (query.Where(x => x.carModelo.Contains(filtro.carModelo)).ToList()) : query;
-                query = (filtro.carDisponivelVenda.HasValue) ? (query.Where(x => x.carDisponivel == filtro.carDisponivelVenda).ToList()) : query;
+                var colecaoCarro = await iCarrosService.GetColecaoCarrosFiltro(filtro);
 
-                return query.ToList();
+                return Ok(colecaoCarro.Count() > 0 ? colecaoCarro : "Nenhum registro localizado.");
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                return BadRequest("Ocorreu um erro:\n" + ex.Message);
             }
 
         }
 
 
         // GET: api/Carros/5
-        [HttpGet("{id}")]
+        [HttpGet("BuscarCarrosPorId/{id}")]
         public async Task<ActionResult<Carros>> GetCarros(Guid id)
         {
             var carros = await _context.Carros.FindAsync(id);
@@ -107,7 +95,7 @@ namespace WebApi.Controllers
 
             return carros;
         }
-      
+
         // PUT: api/Carros/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
