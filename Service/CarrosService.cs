@@ -18,6 +18,7 @@ MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada
 using DataTransferObject.Cadastro;
 using Domain.Entities;
 using Domain.Infra;
+using Infrastructure.String_Message;
 using Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,7 +32,10 @@ namespace Service
     public class CarrosService : ICarrosService
     {
         private readonly AppDbContext DbContext;
-     
+        public CarrosService()
+        {
+
+        }
         public CarrosService(AppDbContext context)
         {
             DbContext = context;
@@ -43,8 +47,8 @@ namespace Service
         {
             try
             {
-                    return await DbContext.Carros.ToListAsync();
-                
+                return await DbContext.Carros.ToListAsync();
+
             }
             catch (Exception ex)
             {
@@ -67,30 +71,71 @@ namespace Service
                 query = (filtro.carModelo != null) ? (query.Where(x => x.carModelo.Contains(filtro.carModelo)).ToList()) : query;
                 query = (filtro.carDisponivelVenda.HasValue) ? (query.Where(x => x.carDisponivel == filtro.carDisponivelVenda).ToList()) : query;
 
-                return  query.ToList();
+                return query.ToList();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new FaultException(ex.Message);
             }
         }
-        public Task<Carros> GetObjetoCarro(Guid carId)
+        public async Task<Carros> GetObjetoCarro(Guid carId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await DbContext.Carros.FindAsync(carId);
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException(ex.Message);
+            }
         }
 
-        public async Task<bool> UpdateCarro(CarrosDTO objeto)
+        public async Task<bool> UpdateCarro(Carros objeto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                DbContext.Entry(objeto).State = EntityState.Modified;
+                await DbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                throw new FaultException(ex.Message);
+            }
         }
-        public async Task<bool> CreateCarro(CarrosDTO objeto)
+
+        public async Task<bool> CarrosExists(Guid id)
         {
-            throw new NotImplementedException();
+            return await DbContext.Carros.AnyAsync(e => e.carId == id);
+        }
+        public async Task<bool> CreateCarro(Carros objeto)
+        {
+            try
+            {
+                DbContext.Carros.Add(objeto);
+                await DbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new FaultException(ex.Message);
+            }
         }
 
         public async Task<bool> DeleteCarro(Guid carId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var carro = await GetObjetoCarro(carId);
+                DbContext.Carros.Remove(carro);
+                await DbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+           
         }
     }
 }

@@ -10,7 +10,9 @@ MANUTENÇÃO      = "Limpesa de variaveis e declarações sem uso na classe"
  */
 #endregion
 
+using AutoMapper;
 using Domain.Infra;
+using Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,9 @@ namespace WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
+            var config = new AutoMapper.MapperConfiguration(x => x.AddProfile<CadastroProfile>());
+            IMapper mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

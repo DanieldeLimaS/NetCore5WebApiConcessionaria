@@ -5,6 +5,7 @@ namespace DataTransferObject.Cadastro
 {
     public class CarrosDTO
     {
+        public Guid? carId { get; set; }
         [Required]
         public string carModelo { get; set; }
         public string carMarca { get; set; }

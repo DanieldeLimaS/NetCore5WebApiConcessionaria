@@ -15,9 +15,11 @@ MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada
  */
 #endregion
 
+using AutoMapper;
 using DataTransferObject.Cadastro;
 using Domain.Entities;
 using Domain.Infra;
+using Infrastructure.String_Message;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,12 +36,12 @@ namespace WebApi.Controllers
     [ApiController]
     public class CarrosController : ControllerBase
     {
-        private readonly AppDbContext _context;
         ICarrosService iCarrosService;
-        public CarrosController(AppDbContext context)
+        IMapper _mapper;
+        public CarrosController(IMapper mapper)
         {
-            _context = context;
-            iCarrosService = new CarrosService(context);
+            iCarrosService = new CarrosService();
+            _mapper = mapper;
         }
 
         // GET: api/Carros
@@ -53,9 +55,8 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest("Ocorreu um erro:\n" + ex.Message);
+                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao + ex.Message);
             }
-
         }
 
         // GET: api/Carros?precoMenor=5000
@@ -71,70 +72,55 @@ namespace WebApi.Controllers
             try
             {
                 var colecaoCarro = await iCarrosService.GetColecaoCarrosFiltro(filtro);
+                if (colecaoCarro == null)
+                    return NotFound(Messages.NenhumRegistroLocalizado);
 
-                return Ok(colecaoCarro.Count() > 0 ? colecaoCarro : "Nenhum registro localizado.");
+                return Ok(colecaoCarro);
             }
             catch (Exception ex)
             {
-                return BadRequest("Ocorreu um erro:\n" + ex.Message);
+                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao + ex.Message);
             }
-
         }
-
 
         // GET: api/Carros/5
         [HttpGet("BuscarCarrosPorId/{id}")]
-        public async Task<ActionResult<Carros>> GetCarros(Guid id)
+        public async Task<IActionResult> GetCarros(Guid id)
         {
-            var carros = await _context.Carros.FindAsync(id);
-
+            var carros = await iCarrosService.GetObjetoCarro(id);
             if (carros == null)
-            {
-                return NotFound();
-            }
+                return NotFound("Nenhum registro localizado.");
 
-            return carros;
+            return Ok(carros);
         }
 
         // PUT: api/Carros/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCarros(Guid id, Carros carros)
+        public async Task<IActionResult> PutCarros(Guid id, CarrosDTO carros)
         {
             if (id != carros.carId)
-            {
                 return BadRequest();
-            }
-
-            _context.Entry(carros).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CarrosExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+           
+            if (!await iCarrosService.UpdateCarro(_mapper.Map<Carros>(carros)))
+                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao);
             return NoContent();
         }
 
         // POST: api/Carros
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Carros>> PostCarros(Carros carros)
+        public async Task<IActionResult> PostCarros(CarrosDTO carros)
         {
-            _context.Carros.Add(carros);
-            await _context.SaveChangesAsync();
-
+            try
+            {
+                if (!await iCarrosService.CreateCarro(_mapper.Map<Carros>(carros)))
+                    return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(Messages.NaoFoiPossivelRealizarOperacao+ex.Message);
+            }
             return CreatedAtAction("GetCarros", new { id = carros.carId }, carros);
         }
 
@@ -142,21 +128,23 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarros(Guid id)
         {
-            var carros = await _context.Carros.FindAsync(id);
-            if (carros == null)
+            try
             {
-                return NotFound();
+                var carros = await iCarrosService.GetObjetoCarro(id);
+                if (!await iCarrosService.CarrosExists(id))
+                    return NotFound();
+
+                await iCarrosService.DeleteCarro(id);
+
+                return NoContent();
             }
-
-            _context.Carros.Remove(carros);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest("Ocorreu um erro interno:\n"+ex.Message);
+            }
+          
         }
 
-        private bool CarrosExists(Guid id)
-        {
-            return _context.Carros.Any(e => e.carId == id);
-        }
+
     }
 }

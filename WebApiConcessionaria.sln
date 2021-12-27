@@ -9,13 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTransferObject", "DataT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{2BE0E8A5-C4BA-447A-A71D-F93AFF86E534}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{19B01367-94AD-4243-925E-00B455980670}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{19B01367-94AD-4243-925E-00B455980670}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{42342AFC-1033-43F3-A509-84355465172F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Interfaces", "Interfaces\Interfaces.csproj", "{42342AFC-1033-43F3-A509-84355465172F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enums", "Enums\Enums.csproj", "{77F6650B-1C9D-46C4-B7E5-50722D280903}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Enums", "Enums\Enums.csproj", "{77F6650B-1C9D-46C4-B7E5-50722D280903}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validations", "Validations\Validations.csproj", "{67D1BAB0-288A-4A3E-8078-4D4C0FE87A3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Validations", "Validations\Validations.csproj", "{67D1BAB0-288A-4A3E-8078-4D4C0FE87A3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{4E1BA460-8979-4016-BB71-8B03961F0166}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{67D1BAB0-288A-4A3E-8078-4D4C0FE87A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67D1BAB0-288A-4A3E-8078-4D4C0FE87A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67D1BAB0-288A-4A3E-8078-4D4C0FE87A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E1BA460-8979-4016-BB71-8B03961F0166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E1BA460-8979-4016-BB71-8B03961F0166}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E1BA460-8979-4016-BB71-8B03961F0166}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E1BA460-8979-4016-BB71-8B03961F0166}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

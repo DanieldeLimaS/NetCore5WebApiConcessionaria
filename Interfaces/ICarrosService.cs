@@ -11,8 +11,9 @@ namespace Interfaces
         Task<IEnumerable<Carros>> GetColecaoCarros();
         Task<IEnumerable<Carros>> GetColecaoCarrosFiltro(CarrosFiltroDTO filtro);
         Task<Carros> GetObjetoCarro(Guid carId);
-        Task<bool> CreateCarro(CarrosDTO objeto);
-        Task<bool> UpdateCarro(CarrosDTO objeto);
+        Task<bool> CreateCarro(Carros objeto);
+        Task<bool> UpdateCarro(Carros objeto);
         Task<bool> DeleteCarro(Guid carId);
+        Task<bool> CarrosExists(Guid id);
     }
 }
