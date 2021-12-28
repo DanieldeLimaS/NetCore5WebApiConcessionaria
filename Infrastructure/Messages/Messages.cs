@@ -1,4 +1,17 @@
-﻿namespace Infrastructure.Messages
+﻿#region Manutenção do Código Fonte
+/*
+
+<IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = "28/12/2021"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "Implementação inicial"
+</IDENTIFICACAO_DE_MANUTENCAO>
+
+ 
+ */
+#endregion
+
+namespace Infrastructure.Messages
 {
     public static class Messages
     {
@@ -10,6 +23,12 @@
         /// Ocorreu um erro interno ao processar a informação:
         /// </summary>
         public static string ErroPadrao => "Ocorreu um erro interno ao processar a informação:\n";
+
+        public static string CampoObrigatorio(string campo)
+        {
+            return $"O campo {campo} é obrigatório.";
+        }
+
         /// <summary>
         /// Não foi possivel realizar a operação:
         /// </summary>

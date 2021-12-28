@@ -11,6 +11,12 @@ DATA            = "27/12/2021"
 PROGRAMADOR     = "Daniel de Lima dos Santos"
 MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada de service para fazer a persistencia no banco"
 </IDENTIFICACAO_DE_MANUTENCAO>
+
+<IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = "28/12/2021"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "Adição do summary nos metodos para deixar documentado o que cada metodo realiza."
+</IDENTIFICACAO_DE_MANUTENCAO>
  
  */
 #endregion
@@ -43,6 +49,9 @@ namespace WebApi.Controllers
         }
 
         // GET: api/Carros
+        /// <summary>
+        /// Requisição GET para listar todos os carros
+        /// </summary>
         [HttpGet("BuscarTodos")]
         public async Task<IActionResult> GetCarros()
         {
@@ -59,9 +68,9 @@ namespace WebApi.Controllers
 
         // GET: api/Carros?precoMenor=5000
         /// <summary>
-        /// Busca lista de carros
+        /// Requisição GET para listar todos os carros com o filtro informado
         /// </summary>
-        /// <param name="filtro"></param>
+        /// <param name="filtro">filtro informado na api para realizar a consulta</param>
         /// <returns></returns>
         [SwaggerOperation("Add a new Pet to the store")]
         [HttpGet("BuscarCarrosComFiltros")]
@@ -82,6 +91,11 @@ namespace WebApi.Controllers
         }
 
         // GET: api/Carros/5
+        /// <summary>
+        /// Requisição GET para listar todos os carros com o ID informado
+        /// </summary>
+        /// <param name="id">Id do carro</param>
+        /// <returns></returns>
         [HttpGet("BuscarCarroPorId/{id}")]
         public async Task<IActionResult> GetCarros(Guid id)
         {
@@ -93,20 +107,29 @@ namespace WebApi.Controllers
         }
 
         // PUT: api/Carros/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Requisição PUT para atualizar as informações do carro informado pelo ID
+        /// </summary>
+        /// <param name="id">ID do carro</param>
+        /// <param name="carros">objeto carro</param>
+        /// <returns></returns>
         [HttpPut("AtualizarCarro/{id}")]
         public async Task<IActionResult> PutCarros(Guid id, CarrosDTO carros)
         {
             if (!await iCarrosService.CarrosExists(id))
                 return NotFound(Messages.RegistroNaoLocalizado);
-           
+
             if (!await iCarrosService.UpdateCarro(_mapper.Map<Carros>(carros)))
                 return BadRequest(Messages.ErroPadrao);
             return Ok(Messages.SucessoPadrao);
         }
 
         // POST: api/Carros
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <summary>
+        /// Requisição POST para Cadastrar o carro/Lista de carros informado pelo usuário
+        /// </summary>
+        /// <param name="carros">Lista de carros do tipo DTO</param>
+        /// <returns></returns>
         [HttpPost("CadastrarCarros")]
         public async Task<IActionResult> PostCarros(List<CarrosDTO> carros)
         {
@@ -118,11 +141,16 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(Messages.NaoFoiPossivelRealizarOperacao+ex.Message);
+                return BadRequest(Messages.NaoFoiPossivelRealizarOperacao + ex.Message);
             }
         }
 
         // DELETE: api/Carros/5
+        /// <summary>
+        /// Requisição DELETE para deletar o carro pelo ID informado no parametro pelo usuário
+        /// </summary>
+        /// <param name="id">ID do carro</param>
+        /// <returns></returns>
         [HttpDelete("DeletarCarro/{id}")]
         public async Task<IActionResult> DeleteCarros(Guid id)
         {
@@ -138,7 +166,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(Messages.ErroPadrao+ex.Message);
+                return BadRequest(Messages.ErroPadrao + ex.Message);
             }
         }
     }
