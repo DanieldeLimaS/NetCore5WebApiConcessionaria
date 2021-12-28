@@ -1,22 +1,25 @@
-﻿using AutoMapper;
+﻿#region Manutenção do Código Fonte
+/*
+ <IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = "28/12/2021"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "Implementação inicial do AutoMapper"
+</IDENTIFICACAO_DE_MANUTENCAO>
+ */
+#endregion
+
+using AutoMapper;
 
 namespace Infrastructure.AutoMapperProfile
 {
     public class AutoMapperProfile
     {
-        private static MapperConfiguration _configuration;
-
-        public static MapperConfiguration InitializeAutoMapper()
+        public static MapperConfiguration AutoMapperConfig()
         {
-            if (_configuration is null)
+            return new MapperConfiguration(x =>
             {
-                _configuration = new MapperConfiguration(cfg =>
-                {
-                    cfg.AddProfile<CadastroProfile>();
-                   
-                });
-            }
-            return _configuration;
+                x.AddProfile<CadastroProfile>();
+            });
         }
     }
 }

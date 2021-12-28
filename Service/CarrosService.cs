@@ -12,6 +12,12 @@ DATA            = "27/12/2021 Alt.2"
 PROGRAMADOR     = "Daniel de Lima dos Santos"
 MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada de service para fazer a persistencia no banco"
 </IDENTIFICACAO_DE_MANUTENCAO>
+
+<IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = "28/12/2021 Alt.1"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "Adicionando summary nos metodos para documentar a responsabilidade de cada um"
+</IDENTIFICACAO_DE_MANUTENCAO>
  */
 #endregion
 
@@ -30,11 +36,17 @@ namespace Service
 {
     public class CarrosService : ICarrosService
     {
+        /// <summary>
+        /// Construtor Padrão da classe CarrosService
+        /// </summary>
         public CarrosService()
         {
 
         }
 
+        /// <summary>
+        /// Obter toda a coleção de carros
+        /// </summary>
         public async Task<IEnumerable<Carros>> GetColecaoCarros()
         {
             try
@@ -50,6 +62,10 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Obter uma coleção de objetos do tipo carros
+        /// </summary>
+        /// <param name="filtro"></param>
         public async Task<IEnumerable<Carros>> GetColecaoCarrosFiltro(CarrosFiltroDTO filtro)
         {
             try
@@ -74,6 +90,11 @@ namespace Service
                 throw new FaultException(ex.Message);
             }
         }
+        
+        /// <summary>
+        /// Obter objeto carro
+        /// </summary>
+        /// <param name="carId">id do carro</param>
         public async Task<Carros> GetObjetoCarro(Guid carId)
         {
             try
@@ -89,6 +110,10 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Atualiza objeto carros
+        /// </summary>
+        /// <param name="objeto">Objeto carro do tipo Carros</param>
         public async Task<bool> UpdateCarro(Carros objeto)
         {
             try
@@ -107,7 +132,10 @@ namespace Service
                 throw new FaultException(ex.Message);
             }
         }
-
+        /// <summary>
+        /// Valida se o Carro existe no banco de dados e retorna um boleano
+        /// </summary>
+        /// <param name="id"> id do carro</param>
         public async Task<bool> CarrosExists(Guid id)
         {
             try
@@ -122,6 +150,11 @@ namespace Service
                 throw new FaultException(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Realiza o cadastro do objeto no banco de dados
+        /// </summary>
+        /// <param name="objetos">Lista de objetos do tipo carro</param>
         public async Task<bool> CreateCarro(List<Carros> objetos)
         {
             try
@@ -132,7 +165,6 @@ namespace Service
                     await context.SaveChangesAsync();
                     return true;
                 }
-              
             }
             catch (Exception ex)
             {
@@ -140,6 +172,10 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Deleta objeto do banco de dados
+        /// </summary>
+        /// <param name="carId"> Id do carro</param>
         public async Task<bool> DeleteCarro(Guid carId)
         {
             try
@@ -151,7 +187,6 @@ namespace Service
                     await context.SaveChangesAsync();
                     return true;
                 }
-               
             }
             catch (Exception ex)
             {

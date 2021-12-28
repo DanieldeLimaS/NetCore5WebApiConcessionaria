@@ -6,13 +6,17 @@ DATA            = "24/12/2021"
 PROGRAMADOR     = "Daniel de Lima dos Santos"
 MANUTENÇÃO      = "Limpesa de variaveis e declarações sem uso na classe"
 </IDENTIFICACAO_DE_MANUTENCAO>
+
+<IDENTIFICACAO_DE_MANUTENCAO>
+DATA            = "28/12/2021"
+PROGRAMADOR     = "Daniel de Lima dos Santos"
+MANUTENÇÃO      = "Implementação do AutoMapper"
+</IDENTIFICACAO_DE_MANUTENCAO>
  
  */
 #endregion
 
-using AutoMapper;
 using Domain.Infra;
-using Infrastructure;
 using Infrastructure.AutoMapperProfile;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,9 +47,8 @@ namespace WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
-            var config = new MapperConfiguration(x => x.AddProfile<CadastroProfile>());
-            IMapper mapper = config.CreateMapper();
-            services.AddSingleton(mapper);
+
+            services.AddSingleton(AutoMapperProfile.AutoMapperConfig().CreateMapper());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
