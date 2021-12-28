@@ -2,7 +2,7 @@
 using DataTransferObject.Cadastro;
 using Domain.Entities;
 
-namespace Infrastructure
+namespace Infrastructure.AutoMapperProfile
 {
     public class CadastroProfile:Profile
     {

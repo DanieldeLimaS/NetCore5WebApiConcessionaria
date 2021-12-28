@@ -95,12 +95,14 @@ namespace Service
             {
                 using(var context = new AppDbContext())
                 {
-                    context.Entry(objeto).State = EntityState.Modified;
+                    //context.Entry(objeto).State = EntityState.Modified;
+                    context.Carros.Update(objeto);
+                    context.Entry(objeto).Property(x => x.carId).IsModified = false;
                     await context.SaveChangesAsync();
                     return true;
                 }
             }
-            catch (DbUpdateConcurrencyException ex)
+            catch (Exception ex)
             {
                 throw new FaultException(ex.Message);
             }
@@ -120,13 +122,13 @@ namespace Service
                 throw new FaultException(ex.Message);
             }
         }
-        public async Task<bool> CreateCarro(Carros objeto)
+        public async Task<bool> CreateCarro(List<Carros> objetos)
         {
             try
             {
                 using(var context = new AppDbContext())
                 {
-                    context.Carros.Add(objeto);
+                    context.Carros.AddRange(objetos);
                     await context.SaveChangesAsync();
                     return true;
                 }

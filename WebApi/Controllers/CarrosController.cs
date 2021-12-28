@@ -18,12 +18,13 @@ MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada
 using AutoMapper;
 using DataTransferObject.Cadastro;
 using Domain.Entities;
-using Infrastructure.String_Message;
+using Infrastructure.Messages;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -52,7 +53,7 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao + ex.Message);
+                return BadRequest(Messages.ErroPadrao + ex.Message);
             }
         }
 
@@ -76,12 +77,12 @@ namespace WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao + ex.Message);
+                return BadRequest(Messages.ErroPadrao + ex.Message);
             }
         }
 
         // GET: api/Carros/5
-        [HttpGet("BuscarCarrosPorId/{id}")]
+        [HttpGet("BuscarCarroPorId/{id}")]
         public async Task<IActionResult> GetCarros(Guid id)
         {
             var carros = await iCarrosService.GetObjetoCarro(id);
@@ -93,55 +94,52 @@ namespace WebApi.Controllers
 
         // PUT: api/Carros/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("AtualizarCarro/{id}")]
         public async Task<IActionResult> PutCarros(Guid id, CarrosDTO carros)
         {
-            if (id != carros.carId)
-                return BadRequest();
+            if (!await iCarrosService.CarrosExists(id))
+                return NotFound(Messages.RegistroNaoLocalizado);
            
             if (!await iCarrosService.UpdateCarro(_mapper.Map<Carros>(carros)))
-                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao);
-            return NoContent();
+                return BadRequest(Messages.ErroPadrao);
+            return Ok(Messages.SucessoPadrao);
         }
 
         // POST: api/Carros
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<IActionResult> PostCarros(CarrosDTO carros)
+        [HttpPost("CadastrarCarros")]
+        public async Task<IActionResult> PostCarros(List<CarrosDTO> carros)
         {
             try
             {
-                if (!await iCarrosService.CreateCarro(_mapper.Map<Carros>(carros)))
-                    return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao);
+                if (!await iCarrosService.CreateCarro(_mapper.Map<List<Carros>>(carros)))
+                    return BadRequest(Messages.ErroPadrao);
+                return Ok(Messages.SucessoPadrao);
             }
             catch (Exception ex)
             {
                 return BadRequest(Messages.NaoFoiPossivelRealizarOperacao+ex.Message);
             }
-            return CreatedAtAction("GetCarros", new { id = carros.carId }, carros);
         }
 
         // DELETE: api/Carros/5
-        [HttpDelete("{id}")]
+        [HttpDelete("DeletarCarro/{id}")]
         public async Task<IActionResult> DeleteCarros(Guid id)
         {
             try
             {
-                var carros = await iCarrosService.GetObjetoCarro(id);
                 if (!await iCarrosService.CarrosExists(id))
-                    return NotFound();
+                    return NotFound(Messages.RegistroNaoLocalizado);
 
-                await iCarrosService.DeleteCarro(id);
+                if (!await iCarrosService.DeleteCarro(id))
+                    return BadRequest(Messages.ErroPadrao);
 
-                return NoContent();
+                return Ok(Messages.SucessoPadrao);
             }
             catch (Exception ex)
             {
-                return BadRequest(Messages.OcorreuUmErroInternoAoProcessarAInformacao+ex.Message);
+                return BadRequest(Messages.ErroPadrao+ex.Message);
             }
-          
         }
-
-
     }
 }

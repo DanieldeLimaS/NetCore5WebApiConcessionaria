@@ -13,6 +13,7 @@ MANUTENÇÃO      = "Limpesa de variaveis e declarações sem uso na classe"
 using AutoMapper;
 using Domain.Infra;
 using Infrastructure;
+using Infrastructure.AutoMapperProfile;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,7 @@ namespace WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApi", Version = "v1" });
             });
-            var config = new AutoMapper.MapperConfiguration(x => x.AddProfile<CadastroProfile>());
+            var config = new MapperConfiguration(x => x.AddProfile<CadastroProfile>());
             IMapper mapper = config.CreateMapper();
             services.AddSingleton(mapper);
         }
