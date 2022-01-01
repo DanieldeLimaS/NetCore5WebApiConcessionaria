@@ -27,6 +27,7 @@ using Domain.Entities;
 using Infrastructure.Messages;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Repositories;
 using Service;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -40,11 +41,11 @@ namespace WebApi.Controllers
     [ApiController]
     public class CarrosController : ControllerBase
     {
-        ICarrosService iCarrosService;
+        ICarrosRepository iCarrosRepository;
         IMapper _mapper;
         public CarrosController(IMapper mapper)
         {
-            iCarrosService = new CarrosService();
+            iCarrosRepository = new CarrosRepository();
             _mapper = mapper;
         }
 
@@ -57,7 +58,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var lista = await iCarrosService.GetColecaoCarros();
+                var lista = await iCarrosRepository.GetColecaoCarros();
                 return Ok(lista.ToList());
             }
             catch (Exception ex)
@@ -78,7 +79,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var colecaoCarro = await iCarrosService.GetColecaoCarrosFiltro(filtro);
+                var colecaoCarro = await iCarrosRepository.GetColecaoCarrosFiltro(filtro);
                 if (colecaoCarro == null)
                     return NotFound(Messages.NenhumRegistroLocalizado);
 
@@ -99,7 +100,7 @@ namespace WebApi.Controllers
         [HttpGet("BuscarCarroPorId/{id}")]
         public async Task<IActionResult> GetCarros(Guid id)
         {
-            var carros = await iCarrosService.GetObjetoCarro(id);
+            var carros = await iCarrosRepository.GetObjetoCarro(id);
             if (carros == null)
                 return NotFound(Messages.NenhumRegistroLocalizado);
 
@@ -116,10 +117,10 @@ namespace WebApi.Controllers
         [HttpPut("AtualizarCarro/{id}")]
         public async Task<IActionResult> PutCarros(Guid id, CarrosDTO carros)
         {
-            if (!await iCarrosService.CarrosExists(id))
+            if (!await iCarrosRepository.CarrosExists(id))
                 return NotFound(Messages.RegistroNaoLocalizado);
 
-            if (!await iCarrosService.UpdateCarro(_mapper.Map<Carros>(carros)))
+            if (!await iCarrosRepository.UpdateCarro(_mapper.Map<Carros>(carros)))
                 return BadRequest(Messages.ErroPadrao);
             return Ok(Messages.SucessoPadrao);
         }
@@ -135,7 +136,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                if (!await iCarrosService.CreateCarro(_mapper.Map<List<Carros>>(carros)))
+                if (!await iCarrosRepository.CreateCarro(_mapper.Map<List<Carros>>(carros)))
                     return BadRequest(Messages.ErroPadrao);
                 return Ok(Messages.SucessoPadrao);
             }
@@ -156,10 +157,10 @@ namespace WebApi.Controllers
         {
             try
             {
-                if (!await iCarrosService.CarrosExists(id))
+                if (!await iCarrosRepository.CarrosExists(id))
                     return NotFound(Messages.RegistroNaoLocalizado);
 
-                if (!await iCarrosService.DeleteCarro(id))
+                if (!await iCarrosRepository.DeleteCarro(id))
                     return BadRequest(Messages.ErroPadrao);
 
                 return Ok(Messages.SucessoPadrao);

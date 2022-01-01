@@ -1,27 +1,4 @@
-﻿#region Manutenção do Código Fonte
-/*
-
-<IDENTIFICACAO_DE_MANUTENCAO>
-DATA            = "27/12/2021 Alt.1"
-PROGRAMADOR     = "Daniel de Lima dos Santos"
-MANUTENÇÃO      = "Organização de controle de manutenção de fonte"
-</IDENTIFICACAO_DE_MANUTENCAO>
- 
-<IDENTIFICACAO_DE_MANUTENCAO>
-DATA            = "27/12/2021 Alt.2"
-PROGRAMADOR     = "Daniel de Lima dos Santos"
-MANUTENÇÃO      = "Separando responsabilidades, levando metodo Get para camada de service para fazer a persistencia no banco"
-</IDENTIFICACAO_DE_MANUTENCAO>
-
-<IDENTIFICACAO_DE_MANUTENCAO>
-DATA            = "28/12/2021 Alt.1"
-PROGRAMADOR     = "Daniel de Lima dos Santos"
-MANUTENÇÃO      = "Adicionando summary nos metodos para documentar a responsabilidade de cada um"
-</IDENTIFICACAO_DE_MANUTENCAO>
- */
-#endregion
-
-using DataTransferObject.Cadastro;
+﻿using DataTransferObject.Cadastro;
 using Domain.Entities;
 using Domain.Infra;
 using Interfaces;
@@ -32,14 +9,14 @@ using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
 
-namespace Service
+namespace Repositories
 {
-    public class CarrosService : ICarrosRepository
+    public class CarrosRepository:ICarrosRepository
     {
         /// <summary>
         /// Construtor Padrão da classe CarrosService
         /// </summary>
-        public CarrosService()
+        public CarrosRepository()
         {
 
         }
@@ -70,7 +47,7 @@ namespace Service
         {
             try
             {
-                using(var context = new AppDbContext())
+                using (var context = new AppDbContext())
                 {
                     List<Carros> query = await context.Carros.ToListAsync();
                     query = (filtro.carPrecoMenor.HasValue) ? (context.Carros.Where(x => x.carPreco <= filtro.carPrecoMenor).ToList()) : query;
@@ -90,7 +67,7 @@ namespace Service
                 throw new FaultException(ex.Message);
             }
         }
-        
+
         /// <summary>
         /// Obter objeto carro
         /// </summary>
@@ -99,7 +76,7 @@ namespace Service
         {
             try
             {
-                using(var context = new AppDbContext())
+                using (var context = new AppDbContext())
                 {
                     return await context.Carros.FindAsync(carId);
                 }
@@ -118,7 +95,7 @@ namespace Service
         {
             try
             {
-                using(var context = new AppDbContext())
+                using (var context = new AppDbContext())
                 {
                     //context.Entry(objeto).State = EntityState.Modified;
                     context.Carros.Update(objeto);
@@ -145,7 +122,7 @@ namespace Service
                     return await context.Carros.AnyAsync(e => e.carId == id);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new FaultException(ex.Message);
             }
@@ -159,7 +136,7 @@ namespace Service
         {
             try
             {
-                using(var context = new AppDbContext())
+                using (var context = new AppDbContext())
                 {
                     context.Carros.AddRange(objetos);
                     await context.SaveChangesAsync();
@@ -180,7 +157,7 @@ namespace Service
         {
             try
             {
-                using(var context = new AppDbContext())
+                using (var context = new AppDbContext())
                 {
                     var carro = await GetObjetoCarro(carId);
                     context.Carros.Remove(carro);
@@ -192,7 +169,7 @@ namespace Service
             {
                 throw new FaultException(ex.Message);
             }
-           
+
         }
     }
 }

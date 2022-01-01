@@ -2,13 +2,15 @@
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Interfaces
 {
-    public interface ICarrosService
+    public interface IVendasRepository
     {
-        Task<IEnumerable<Carros>> GetColecaoCarros();
+        Task<IEnumerable<Vendas>> GetColecaoCarros();
         Task<IEnumerable<Carros>> GetColecaoCarrosFiltro(CarrosFiltroDTO filtro);
         Task<Carros> GetObjetoCarro(Guid carId);
         Task<bool> CreateCarro(List<Carros> objeto);
