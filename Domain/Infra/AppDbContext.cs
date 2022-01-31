@@ -28,6 +28,7 @@ namespace Domain.Infra
 
         }
         public DbSet<Carros> Carros { get; set; }
+        public DbSet<Vendas> Vendas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

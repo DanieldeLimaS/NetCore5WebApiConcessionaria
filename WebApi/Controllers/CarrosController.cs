@@ -28,7 +28,6 @@ using Infrastructure.Messages;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Repositories;
-using Service;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
