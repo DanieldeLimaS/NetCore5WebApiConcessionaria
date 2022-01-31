@@ -4,12 +4,51 @@
         <name>WebApi</name>
     </assembly>
     <members>
+        <member name="M:WebApi.Controllers.CarrosController.GetCarros">
+            <summary>
+            Requisição GET para listar todos os carros
+            </summary>
+        </member>
         <member name="M:WebApi.Controllers.CarrosController.GetCarros(DataTransferObject.Cadastro.CarrosFiltroDTO)">
             <summary>
-            Busca lista de carros
+            Requisição GET para listar todos os carros com o filtro informado
             </summary>
-            <param name="filtro"></param>
+            <param name="filtro">filtro informado na api para realizar a consulta</param>
             <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CarrosController.GetCarros(System.Guid)">
+            <summary>
+            Requisição GET para listar todos os carros com o ID informado
+            </summary>
+            <param name="id">Id do carro</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CarrosController.PutCarros(System.Guid,DataTransferObject.Cadastro.CarrosDTO)">
+            <summary>
+            Requisição PUT para atualizar as informações do carro informado pelo ID
+            </summary>
+            <param name="id">ID do carro</param>
+            <param name="carros">objeto carro</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CarrosController.PostCarros(System.Collections.Generic.List{DataTransferObject.Cadastro.CarrosDTO})">
+            <summary>
+            Requisição POST para Cadastrar o carro/Lista de carros informado pelo usuário
+            </summary>
+            <param name="carros">Lista de carros do tipo DTO</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.CarrosController.DeleteCarros(System.Guid)">
+            <summary>
+            Requisição DELETE para deletar o carro pelo ID informado no parametro pelo usuário
+            </summary>
+            <param name="id">ID do carro</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.VendasController.GetCarros">
+            <summary>
+            Requisição GET para listar todos os carros
+            </summary>
         </member>
     </members>
 </doc>

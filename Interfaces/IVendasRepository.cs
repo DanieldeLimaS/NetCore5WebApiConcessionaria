@@ -10,7 +10,8 @@ namespace Interfaces
 {
     public interface IVendasRepository
     {
-        Task<IEnumerable<Vendas>> GetColecaoCarros();
+        Task<IEnumerable<Vendas>> GetColecaoVendas();
+        Task<IEnumerable<Vendas>> GetColecaoVendasPorData(DateTime DataInicial, DateTime DataFinal);
       
     }
 }
